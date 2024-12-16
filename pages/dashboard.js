@@ -9,24 +9,24 @@ export default function Dashboard() {
   const setUser = useAuthStore((state) => state.setUser);
   const router = useRouter();
 
-  // Wait until the session is authenticated before attempting to fetch user data
+  
   useEffect(() => {
     if (status === 'loading') {
-      return; // Don't do anything until the session status is settled
+      return; 
     }
 
     if (status === 'authenticated') {
       const { name, email } = session.user;
-      setUser({ name, email });
+      setUser({ name, email })
 
-      // Update URL if necessary
+     
       axios
-        .get(`http://localhost:4000/api/users/users/${email}`) // Fix backend API route
+        .get(`http://localhost:4000/api/users/users/${email}`) 
         .then((response) => {
           if (response.data) {
-            router.push('/dashboard'); // Already a user, redirect to dashboard
+            router.push('/dashboard'); 
           } else {
-            // New user, create user record
+
             axios
               .post('http://localhost:4000/api/users', { name, email })
               .then(() => {
@@ -37,7 +37,7 @@ export default function Dashboard() {
         })
         .catch((err) => console.error('Error checking user data:', err));
     } else if (status === 'unauthenticated') {
-      router.push('/'); // Redirect to login if not authenticated
+      router.push('/');
     }
   }, [status, session, setUser, router]);
 
@@ -47,7 +47,7 @@ export default function Dashboard() {
   };
 
   if (status === 'loading') {
-    return <p>Loading...</p>; // Wait for session loading
+    return <p>Loading...</p>; 
   }
 
   return (

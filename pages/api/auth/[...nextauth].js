@@ -20,8 +20,8 @@ export default NextAuth({
     // Attach custom data to the JWT
     async jwt({ token, account, user }) {
       if (account && user) {
-        token.id = user.id; // Add user ID to the token
-        token.email = user.email; // Add email if needed
+        token.id = user.id;
+        token.email = user.email; 
       }
       return token;
     },
@@ -29,8 +29,8 @@ export default NextAuth({
     // Pass custom token data to the session
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id; // Attach the ID to the session
-        session.user.email = token.email; // Attach the email if needed
+        session.user.id = token.id; 
+        session.user.email = token.email; 
       }
       return session;
     },
@@ -38,14 +38,14 @@ export default NextAuth({
     // Validate email domain during sign-in
     async signIn({ user }) {
       if (user.email && !user.email.endsWith("@appinessworld.com")) {
-        return false; // Reject sign-in if email domain doesn't match
+        return false; 
       }
-      return true; // Accept sign-in
+      return true; 
     },
 
     // Redirect after sign-in
     async redirect({ url, baseUrl }) {
-      return baseUrl + "/dashboard"; // Redirect to dashboard
+      return baseUrl + "/dashboard"; 
     },
   },
 });

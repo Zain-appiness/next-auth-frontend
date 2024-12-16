@@ -9,17 +9,17 @@ export default function Home() {
 
   useEffect(() => {
     if (status === 'loading') {
-      return; // Wait for the session loading to complete
+      return; 
     }
     if (status === 'unauthenticated') {
-      router.push('/'); // Redirect to login if user is not authenticated
+      router.push('/'); 
     } else if (status === 'authenticated') {
       router.push('/dashboard');
     }
   }, [status, router]);
 
   if (status === 'loading') {
-    return <p>Loading...</p>; // Wait for session loading
+    return <p>Loading...</p>; 
   }
 
   return (
