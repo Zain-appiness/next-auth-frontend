@@ -6,7 +6,6 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      redirectUri: "https://next-auth-frontend-olv3-8ltruc4fd-zain-appiness-projects.vercel.app/api/auth/callback/google",
       authorization: {
         params: {
           prompt: "consent",
