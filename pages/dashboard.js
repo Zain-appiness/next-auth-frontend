@@ -3,6 +3,14 @@ import { useAuthStore } from '../stores/authStores';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import {Button} from '../components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -52,15 +60,21 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold mb-4">
-        Hello, {session?.user?.name || 'User'}!
-      </h1>
-      <button
+       <Card className="w-[500px] h-[500px] flex flex-col justify-center">
+       <CardHeader className="text-center">
+          <CardTitle className="text-xl"> Hello, {session?.user?.name || 'User'}!</CardTitle>
+          <CardDescription className="text-gray-600">SIGN-IN AS {session?.user?.name || 'User'}</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col justify-center items-center space-y-4 h-full">
+        <Button
         onClick={handleLogout}
         className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
       >
-        Logout
-      </button>
+       <MailOpen /> Logout
+      </Button>
+
+      </CardContent>
+       </Card>
     </div>
   );
 }
