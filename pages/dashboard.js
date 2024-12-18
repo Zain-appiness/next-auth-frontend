@@ -2,6 +2,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useAuthStore } from '../stores/authStores'; 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { MailOpen } from "lucide-react";
 import axios from 'axios';
 import {Button} from '../components/ui/button';
 import {
