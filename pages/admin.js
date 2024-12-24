@@ -40,7 +40,7 @@ export default function Admin() {
   const fetchProjects = async () => {
     try {
       const token = getToken();
-      const response = await axios.get("http://localhost:4000/api/projects", {
+      const response = await axios.get("http://localhost:4000/api/project", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(response.data);
@@ -52,10 +52,10 @@ export default function Admin() {
   const fetchUsers = async () => {
     try {
       const token = getToken();
-      const response = await axios.get("http://localhost:4000/api/users", {
+      const response = await axios.get("http://localhost:4000/api/user/", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUsers(response.data);
+      setUsers(response.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -76,16 +76,24 @@ export default function Admin() {
     e.preventDefault();
     try {
       const token = getToken();
+      const payload={
+        name: form.name,
+        startDate: form.startDate || "2024-12-11",
+        endDate: form.endDate || "2024-12-31",
+        projectManagerId: form.manager,
+        teamMemberIds: form.teamMembers.map((id) => parseInt(id)),
+      };
+      
       if (editingProjectId) {
         await axios.put(
-          `http://localhost:4000/api/projects/${editingProjectId}`,
-          form,
+          `http://localhost:4000/api/project/${editingProjectId}`,
+          payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         alert("Project updated successfully!");
         setEditingProjectId(null);
       } else {
-        await axios.post("http://localhost:4000/api/projects", form, {
+        await axios.post("http://localhost:4000/api/project", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("Project created successfully!");
@@ -100,7 +108,7 @@ export default function Admin() {
   const handleDelete = async (id) => {
     try {
       const token = getToken();
-      await axios.delete(`http://localhost:4000/api/projects/${id}`, {
+      await axios.delete(`http://localhost:4000/api/project/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Project deleted successfully!");
@@ -115,7 +123,7 @@ export default function Admin() {
     setForm({
       name: project.name,
       description: project.description,
-      manager: project.manager.id, // Make sure manager is stored as ID
+      manager: project.projectManagerId, // Make sure manager is stored as ID
       teamMembers: project.teamMembers.map((member) => member.id), // Store only IDs for teamMembers
     });
   };
@@ -180,7 +188,7 @@ export default function Admin() {
                   required
                 >
                   <option value="">Select Manager</option>
-                  {users.map((user) => (
+                  {Array.isArray(users) && users.map((user) => (
                     <option key={user.id} value={user.id}>
                       {user.name}
                     </option>
@@ -226,7 +234,7 @@ export default function Admin() {
               <div key={project.id} className="p-4 border border-gray-300 rounded-lg">
                 <h3 className="text-lg font-bold">{project.name}</h3>
                 <p>{project.description}</p>
-                <p>Manager: {project.manager.name}</p>
+                <p>Manager: {project.name}</p>
                 <p>
                   Team Members:{" "}
                   {project.teamMembers.map((member) => member.name).join(", ")}
