@@ -24,7 +24,7 @@ export default function Admin() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/api/user/login", {
+      const response = await axios.post("https://next-auth-backend-5bn44i2ud-zain-appiness-projects.vercel.app/api/user/login", {
         email,
       });
       const token = response.data.token;
@@ -40,7 +40,7 @@ export default function Admin() {
   const fetchProjects = async () => {
     try {
       const token = getToken();
-      const response = await axios.get("http://localhost:4000/api/project", {
+      const response = await axios.get("https://next-auth-backend-5bn44i2ud-zain-appiness-projects.vercel.app/api/project", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(response.data);
@@ -52,7 +52,7 @@ export default function Admin() {
   const fetchUsers = async () => {
     try {
       const token = getToken();
-      const response = await axios.get("http://localhost:4000/api/user/", {
+      const response = await axios.get("https://next-auth-backend-5bn44i2ud-zain-appiness-projects.vercel.app/api/user/", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data.users);
@@ -86,14 +86,14 @@ export default function Admin() {
       
       if (editingProjectId) {
         await axios.put(
-          `http://localhost:4000/api/project/${editingProjectId}`,
+          `https://next-auth-backend-5bn44i2ud-zain-appiness-projects.vercel.app/api/project/${editingProjectId}`,
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         alert("Project updated successfully!");
         setEditingProjectId(null);
       } else {
-        await axios.post("http://localhost:4000/api/project", payload, {
+        await axios.post("https://next-auth-backend-5bn44i2ud-zain-appiness-projects.vercel.app/api/project", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("Project created successfully!");
@@ -108,7 +108,7 @@ export default function Admin() {
   const handleDelete = async (id) => {
     try {
       const token = getToken();
-      await axios.delete(`http://localhost:4000/api/project/${id}`, {
+      await axios.delete(`https://next-auth-backend-5bn44i2ud-zain-appiness-projects.vercel.app/api/project/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Project deleted successfully!");
