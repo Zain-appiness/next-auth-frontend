@@ -28,7 +28,7 @@ export default function Profile() {
       const login = async (email) => {
         try {
           console.log("Logging in with email:", email);
-          const response = await axios.post("https://next-auth-backend-7n6yw8lzw-zain-appiness-projects.vercel.app/api/user/login", { email });
+          const response = await axios.post("https://next-auth-backend-3vevv43le-zain-appiness-projects.vercel.app/api/user/login", { email });
           const token = response.data.token;
           localStorage.setItem("jwtToken", token);
           console.log("Login successful");
@@ -53,7 +53,7 @@ export default function Profile() {
         
         try {
           console.log(`Fetching profile for userId: ${userId}`);
-          const response = await axios.get(`https://next-auth-backend-7n6yw8lzw-zain-appiness-projects.vercel.app/api/project/user/${userId}`, {
+          const response = await axios.get(`https://next-auth-backend-3vevv43le-zain-appiness-projects.vercel.app/api/project/user/${userId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log("Profile data:", response.data);

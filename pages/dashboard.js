@@ -33,7 +33,7 @@ export default function Dashboard() {
 
       // First, check if the user already exists
       axios
-        .get(`https://next-auth-backend-7n6yw8lzw-zain-appiness-projects.vercel.app/api/user/email/${email}`)
+        .get(`https://next-auth-backend-3vevv43le-zain-appiness-projects.vercel.app/api/user/email/${email}`)
         .then((response) => {
           if (response.data) {
             // Store the userId in state and pass it to the profile page
@@ -42,7 +42,7 @@ export default function Dashboard() {
           } else {
             // Create new user if not found
             axios
-              .post('https://next-auth-backend-7n6yw8lzw-zain-appiness-projects.vercel.app/api/user/signup', { name, email, isAdmin })
+              .post('https://next-auth-backend-3vevv43le-zain-appiness-projects.vercel.app/api/user/signup', { name, email, isAdmin })
               .then((signupResponse) => {
                 setUserId(signupResponse.data.id);  // Store the newly created user's ID
                 router.push(`/dashboard?userId=${signupResponse.data.id}`);
