@@ -20,43 +20,52 @@ export default function Dashboard() {
   const router = useRouter();
   const [userId, setUserId] = useState(null);  // State to store the userId
   const [isLoading, setIsLoading] = useState(true); // Add a loading state to manage requests
-
   useEffect(() => {
     if (status === 'loading') {
       return;
     }
-
+  
     if (status === 'authenticated' && !userId) {
       const { name, email } = session.user;
       setUser({ name, email });
       const isAdmin = false;
-
+  
       // First, check if the user already exists
       axios
-        .get(`https://next-auth-backend-3vevv43le-zain-appiness-projects.vercel.app/api/user/email/${email}`)
+        .get(`https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/email/${email}`, {
+          withCredentials: true,
+        })
         .then((response) => {
           if (response.data) {
-            // Store the userId in state and pass it to the profile page
+            // User found, store the userId in state and navigate to the dashboard
             setUserId(response.data.id);
             router.push(`/dashboard?userId=${response.data.id}`);
-          } else {
-            // Create new user if not found
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 404) {
+            // User not found, create a new user
             axios
-              .post('https://next-auth-backend-3vevv43le-zain-appiness-projects.vercel.app/api/user/signup', { name, email, isAdmin })
+              .post('https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/signup', {
+                name,
+                email,
+                isAdmin,
+              })
               .then((signupResponse) => {
-                setUserId(signupResponse.data.id);  // Store the newly created user's ID
+                setUserId(signupResponse.data.id); // Store the newly created user's ID
                 router.push(`/dashboard?userId=${signupResponse.data.id}`);
               })
               .catch((err) => console.error('Error storing user data:', err));
+          } else {
+            console.error('Error checking user data:', error);
           }
         })
-        .catch((err) => console.error('Error checking user data:', err))
         .finally(() => setIsLoading(false)); // Stop loading when request is done
     } else if (status === 'unauthenticated') {
       router.push('/');
     }
   }, [status, session, setUser, router, userId]); // Adding userId as dependency to prevent infinite re-renders
-
+  
   const handleLogout = async () => {
     setUser(null);
     await signOut({ callbackUrl: "/" });
