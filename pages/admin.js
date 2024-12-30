@@ -14,6 +14,7 @@ export default function Admin() {
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [email, setEmail] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -24,7 +25,7 @@ export default function Admin() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/user/login", {
+      const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         email,
       });
       const token = response.data.token;
@@ -40,7 +41,7 @@ export default function Admin() {
   const fetchProjects = async () => {
     try {
       const token = getToken();
-      const response = await axios.get("https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/project", {
+      const response = await axios.get(`${BACKEND_URL}/api/project`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(response.data);
@@ -52,7 +53,7 @@ export default function Admin() {
   const fetchUsers = async () => {
     try {
       const token = getToken();
-      const response = await axios.get("https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/user/", {
+      const response = await axios.get(`${BACKEND_URL}/api/user/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data.users);
@@ -86,14 +87,14 @@ export default function Admin() {
       
       if (editingProjectId) {
         await axios.put(
-          `https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/project/${editingProjectId}`,
+          `${BACKEND_URL}/api/project/${editingProjectId}`,
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         alert("Project updated successfully!");
         setEditingProjectId(null);
       } else {
-        await axios.post("https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/project", payload, {
+        await axios.post(`${BACKEND_URL}/api/project`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("Project created successfully!");
@@ -108,7 +109,7 @@ export default function Admin() {
   const handleDelete = async (id) => {
     try {
       const token = getToken();
-      await axios.delete(`https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/project/${id}`, {
+      await axios.delete(`${BACKEND_URL}/api/project/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Project deleted successfully!");

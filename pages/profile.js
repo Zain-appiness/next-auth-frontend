@@ -18,6 +18,7 @@ export default function Profile() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId'); // Extract userId from query params
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
     if (status === 'loading') {
@@ -28,7 +29,7 @@ export default function Profile() {
       const login = async (email) => {
         try {
           console.log("Logging in with email:", email);
-          const response = await axios.post("https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/user/login", { email });
+          const response = await axios.post(`${BACKEND_URL}//api/user/login`, { email });
           const token = response.data.token;
           console.log(token);
           localStorage.setItem("jwtToken", token);
@@ -54,7 +55,7 @@ export default function Profile() {
         
         try {
           console.log(`Fetching profile for userId: ${userId}`);
-          const response = await axios.get(`https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/project/user/${userId}`, {
+          const response = await axios.get(`${BACKEND_URL}/api/project/user/${userId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log("Profile data:", response.data);

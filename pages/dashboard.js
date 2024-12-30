@@ -20,6 +20,8 @@ export default function Dashboard() {
   const router = useRouter();
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  
 
   useEffect(() => {
     if (status === 'loading') {
@@ -32,7 +34,7 @@ export default function Dashboard() {
       const isAdmin = false;
 
       axios
-        .get(`https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/user/email/${email}`, {
+        .get(`${BACKEND_URL}/api/user/email/${email}`, {
           withCredentials: true,
         })
         .then((response) => {
@@ -44,7 +46,7 @@ export default function Dashboard() {
         .catch((error) => {
           if (error.response && error.response.status === 404) {
             axios
-              .post('https://next-auth-backend-bmb9pt0zx-zain-appiness-projects.vercel.app/api/user/signup', {
+              .post(`${BACKEND_URL}/api/user/signup`, {
                 name,
                 email,
                 isAdmin,
