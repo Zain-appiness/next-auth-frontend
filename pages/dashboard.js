@@ -32,7 +32,7 @@ export default function Dashboard() {
       const isAdmin = false;
 
       axios
-        .get(`https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/email/${email}`, {
+        .get(`https://next-auth-backend-ln9ncq7j9-zain-appiness-projects.vercel.app/api/user/email/${email}`, {
           withCredentials: true,
         })
         .then((response) => {
@@ -44,7 +44,7 @@ export default function Dashboard() {
         .catch((error) => {
           if (error.response && error.response.status === 404) {
             axios
-              .post('https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/signup', {
+              .post('https://next-auth-backend-ln9ncq7j9-zain-appiness-projects.vercel.app/api/user/signup', {
                 name,
                 email,
                 isAdmin,
