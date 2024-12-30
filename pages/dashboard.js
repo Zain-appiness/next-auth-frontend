@@ -2,7 +2,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useAuthStore } from '../stores/authStores';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'; 
+import { useRouter } from 'next/router';
 import { MailOpen } from "lucide-react";
 import axios from 'axios';
 import { Button } from '../components/ui/button';
@@ -18,33 +18,42 @@ export default function Dashboard() {
   const { data: session, status } = useSession();
   const setUser = useAuthStore((state) => state.setUser);
   const router = useRouter();
-  const [userId, setUserId] = useState(null);  // State to store the userId
-  const [isLoading, setIsLoading] = useState(true); // Add a loading state to manage requests
+  const [userId, setUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Extract userId from query parameters on reload
   useEffect(() => {
-    if (status === 'loading') {
-      return;
+    const queryUserId = new URLSearchParams(window.location.search).get('userId');
+    if (queryUserId) {
+      setUserId(queryUserId);
     }
-  
+  }, []);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+
     if (status === 'authenticated' && !userId) {
       const { name, email } = session.user;
       setUser({ name, email });
       const isAdmin = false;
-  
-      // First, check if the user already exists
+
+      // Check if the user already exists
       axios
         .get(`https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/email/${email}`, {
           withCredentials: true,
         })
         .then((response) => {
           if (response.data) {
-            // User found, store the userId in state and navigate to the dashboard
+            // User exists, set the userId
             setUserId(response.data.id);
-            router.push(`/dashboard?userId=${response.data.id}`);
+            if (!window.location.search.includes('userId')) {
+              router.push(`/dashboard?userId=${response.data.id}`);
+            }
           }
         })
         .catch((error) => {
-          if (error.response && error.response.status === 404) {
-            // User not found, create a new user
+          if (error.response?.status === 404) {
+            // User does not exist, create a new one
             axios
               .post('https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/signup', {
                 name,
@@ -52,30 +61,32 @@ export default function Dashboard() {
                 isAdmin,
               })
               .then((signupResponse) => {
-                setUserId(signupResponse.data.id); // Store the newly created user's ID
-                router.push(`/dashboard?userId=${signupResponse.data.id}`);
+                setUserId(signupResponse.data.id);
+                if (!window.location.search.includes('userId')) {
+                  router.push(`/dashboard?userId=${signupResponse.data.id}`);
+                }
               })
               .catch((err) => console.error('Error storing user data:', err));
           } else {
             console.error('Error checking user data:', error);
           }
         })
-        .finally(() => setIsLoading(false)); // Stop loading when request is done
+        .finally(() => setIsLoading(false));
     } else if (status === 'unauthenticated') {
       router.push('/');
     }
-  }, [status, session, setUser, router, userId]); // Adding userId as dependency to prevent infinite re-renders
-  
+  }, [status, session, setUser, router, userId]);
+
   const handleLogout = async () => {
     setUser(null);
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: '/' });
   };
 
   const handleNavigateToProfile = () => {
     if (userId) {
       router.push(`/profile?userId=${userId}`);
     } else {
-      console.error("User ID not found.");
+      console.error('User ID not found.');
     }
   };
 
