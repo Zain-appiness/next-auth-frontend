@@ -39,7 +39,7 @@ export default function Dashboard() {
           if (response.data) {
             // User found, store the userId in state and navigate to the dashboard
             setUserId(response.data.id);
-            router.push(`/profile?userId=${response.data.id}`);
+            router.push(`/dashboard?userId=${response.data.id}`);
           }
         })
         .catch((error) => {
@@ -53,7 +53,7 @@ export default function Dashboard() {
               })
               .then((signupResponse) => {
                 setUserId(signupResponse.data.id); // Store the newly created user's ID
-                router.push(`/profile?userId=${signupResponse.data.id}`);
+                router.push(`/dashboard?userId=${signupResponse.data.id}`);
               })
               .catch((err) => console.error('Error storing user data:', err));
           } else {

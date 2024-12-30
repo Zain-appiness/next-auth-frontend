@@ -30,6 +30,7 @@ export default function Profile() {
           console.log("Logging in with email:", email);
           const response = await axios.post("https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/login", { email });
           const token = response.data.token;
+          console.log(token);
           localStorage.setItem("jwtToken", token);
           console.log("Login successful");
         } catch (error) {
