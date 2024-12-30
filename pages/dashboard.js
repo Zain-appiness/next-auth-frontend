@@ -2,7 +2,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useAuthStore } from '../stores/authStores';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'; 
 import { MailOpen } from "lucide-react";
 import axios from 'axios';
 import { Button } from '../components/ui/button';
@@ -21,39 +21,28 @@ export default function Dashboard() {
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Extract userId from query parameters on reload
   useEffect(() => {
-    const queryUserId = new URLSearchParams(window.location.search).get('userId');
-    if (queryUserId) {
-      setUserId(queryUserId);
+    if (status === 'loading') {
+      return;
     }
-  }, []);
-
-  useEffect(() => {
-    if (status === 'loading') return;
 
     if (status === 'authenticated' && !userId) {
       const { name, email } = session.user;
       setUser({ name, email });
       const isAdmin = false;
 
-      // Check if the user already exists
       axios
         .get(`https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/email/${email}`, {
           withCredentials: true,
         })
         .then((response) => {
           if (response.data) {
-            // User exists, set the userId
             setUserId(response.data.id);
-            if (!window.location.search.includes('userId')) {
-              router.push(`/dashboard?userId=${response.data.id}`);
-            }
+            console.log("get",response.data.id)
           }
         })
         .catch((error) => {
-          if (error.response?.status === 404) {
-            // User does not exist, create a new one
+          if (error.response && error.response.status === 404) {
             axios
               .post('https://next-auth-backend-qr6akl1li-zain-appiness-projects.vercel.app/api/user/signup', {
                 name,
@@ -62,9 +51,7 @@ export default function Dashboard() {
               })
               .then((signupResponse) => {
                 setUserId(signupResponse.data.id);
-                if (!window.location.search.includes('userId')) {
-                  router.push(`/dashboard?userId=${signupResponse.data.id}`);
-                }
+                console.log("post",signupResponse.data.id)
               })
               .catch((err) => console.error('Error storing user data:', err));
           } else {
@@ -75,18 +62,26 @@ export default function Dashboard() {
     } else if (status === 'unauthenticated') {
       router.push('/');
     }
-  }, [status, session, setUser, router, userId]);
+  }, [status, session, setUser, router]);
+
+  // Handle query parameter for userId
+  useEffect(() => {
+    const queryUserId = router.query.userId;
+    if (queryUserId && !userId) {
+      setUserId(queryUserId);
+    }
+  }, [router.query.userId, userId]);
 
   const handleLogout = async () => {
     setUser(null);
-    await signOut({ callbackUrl: '/' });
+    await signOut({ callbackUrl: "/" });
   };
 
   const handleNavigateToProfile = () => {
     if (userId) {
       router.push(`/profile?userId=${userId}`);
     } else {
-      console.error('User ID not found.');
+      console.error("User ID not found.");
     }
   };
 
