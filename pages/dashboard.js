@@ -21,7 +21,7 @@ export default function Dashboard() {
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  
+  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
 
   useEffect(() => {
     if (status === 'loading') {
