@@ -9,6 +9,7 @@ import {
 } from '../../components/ui/card';
 import axios from 'axios';
 
+
 export default function ProjectReport() {
   const router = useRouter();
   const { id, userId } = router.query;  // Extracting userId and projectId from the URL query
@@ -18,6 +19,7 @@ export default function ProjectReport() {
     taskDetails: '',
   });
   const [error, setError] = useState(null); // To handle errors
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +44,7 @@ export default function ProjectReport() {
       }
 
       const response = await axios.post(
-        `http://localhost:4000/api/daily/update/${userId}`,
+        `${BACKEND_URL}/api/daily/update/${userId}`,
         {
           projectId: id, // Pass the projectId from the URL
           ...report,      // Spread the form data
