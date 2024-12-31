@@ -29,7 +29,7 @@ export default function Profile() {
       const login = async (email) => {
         try {
           console.log("Logging in with email:", email);
-          const response = await axios.post(`${BACKEND_URL}//api/user/login`, { email });
+          const response = await axios.post(`${BACKEND_URL}/api/user/login`, { email });
           const token = response.data.token;
           console.log(token);
           localStorage.setItem("jwtToken", token);
