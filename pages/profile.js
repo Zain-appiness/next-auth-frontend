@@ -68,7 +68,7 @@ const Profile = () => {
             <li
               key={project.id}
               className="p-4 bg-gray-100 rounded cursor-pointer hover:bg-gray-200"
-              onClick={() => router.push(`/projects/${project.id}?userId=${userId}`)}
+              onClick={() => router.push(`/projects/${project.id}?userId=${userId}?projectname=${project.name}`)}
             >
               <div className="font-semibold text-lg">{project.name}</div>
               <div>Start Date: {new Date(project.startDate).toLocaleDateString()}</div>

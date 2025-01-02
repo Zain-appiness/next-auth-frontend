@@ -12,7 +12,7 @@ import axios from 'axios';
 
 export default function ProjectReport() {
   const router = useRouter();
-  const { id, userId } = router.query;  // Extracting userId and projectId from the URL query
+  const { id, userId,projectname } = router.query;  // Extracting userId and projectId from the URL query
   const [report, setReport] = useState({
     startTime: '',
     endTime: '',
@@ -46,7 +46,7 @@ export default function ProjectReport() {
       const response = await axios.post(
         `${BACKEND_URL}/api/daily/update/${userId}`,
         {
-          projectId: id, // Pass the projectId from the URL
+          projectId: id, // Passing the projectId from the URL\
           ...report,      // Spread the form data
         },
         {
@@ -68,7 +68,7 @@ export default function ProjectReport() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-[500px] p-4">
         <CardHeader>
-          <CardTitle className="text-xl">Project Report for {id}</CardTitle>
+          <CardTitle className="text-xl">Project Report for {projectname}</CardTitle>
         </CardHeader>
         <CardContent>
           {error && <p className="text-red-500 mb-4">{error}</p>}
