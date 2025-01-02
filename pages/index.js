@@ -37,14 +37,22 @@ export default function Home() {
         <CardHeader className="text-center">
           <CardTitle className="text-xl">SIGN-IN WITH GOOGLE WITH YOUR APPINESS EMAIL</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col justify-center items-center space-y-4 h-full">
+        <CardContent className="flex flex-col justify-center items-center space-y-1 h-full">
           {!session ? (
+            <div className="text-center">
             <Button
               className="w-64 h-16 bg-blue-500 text-white text-lg rounded-lg hover:bg-blue-600 flex items-center justify-center"
               onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
             >
               <MailOpen className="mr-2 w-6 h-6" /> Sign in with Google
             </Button>
+            <Button
+                className="mt-4 w-64 h-16 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
+                onClick={() => router.push('/admin')}
+              >
+                Go to Admin Page
+              </Button>
+            </div>
           ) : (
             <div className="text-center">
               <p className="mb-4">Welcome, {session.user.name}</p>
