@@ -14,7 +14,7 @@ export default function Admin() {
     name: "",
     description: "",
     manager: "",
-    teamMembers: [],
+    teamMembers: [],  // Ensure teamMembers is initialized as an array
     startDate: "",
     endDate: "",
   });
@@ -121,7 +121,7 @@ export default function Admin() {
         name: "",
         description: "",
         manager: "",
-        teamMembers: [],
+        teamMembers: [], // Reset teamMembers to an empty array
         startDate: "",
         endDate: "",
       });
@@ -213,6 +213,7 @@ export default function Admin() {
                 required
               />
               <Select
+                value={form.manager} // Ensure value is set correctly
                 onValueChange={(value) =>
                   setForm((prevForm) => ({ ...prevForm, manager: value }))
                 }
@@ -228,6 +229,7 @@ export default function Admin() {
               </Select>
               <Select
                 multiple
+                value={form.teamMembers} // Ensure value is set correctly
                 onValueChange={(values) =>
                   setForm((prevForm) => ({ ...prevForm, teamMembers: values }))
                 }
@@ -258,21 +260,15 @@ export default function Admin() {
           <h2 className="text-xl font-bold mb-4">Project List</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {projects.map((project) => (
-              <div key={project.id} className="p-4 border border-gray-300 rounded-lg">
-                <h3 className="text-lg font-bold">{project.name}</h3>
+              <div key={project.id} className="border p-4 rounded-lg">
+                <h3 className="text-lg font-semibold">{project.name}</h3>
                 <p>{project.description}</p>
-                <p>Manager: {project.managerName}</p>
-                <p>Start Date: {project.startDate}</p>
-                <p>End Date: {project.endDate}</p>
-                <p>
-                  Team Members:{" "}
-                  {project.teamMembers.map((member) => member.name).join(", ")}
-                </p>
-                <div className="space-x-2 mt-4">
-                  <Button onClick={() => handleEdit(project)} variant="secondary">
-                    Edit
-                  </Button>
-                  <Button onClick={() => handleDelete(project.id)} variant="destructive">
+                <div className="mt-4 flex justify-between">
+                  <Button onClick={() => handleEdit(project)}>Edit</Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(project.id)}
+                  >
                     Delete
                   </Button>
                 </div>
