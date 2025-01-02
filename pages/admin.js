@@ -1,11 +1,11 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import {Select, SelectTrigger, SelectContent, SelectItem} from '../components/ui/select';
+import { Select, SelectTrigger, SelectContent, SelectItem } from '../components/ui/select';
 import { useRouter } from "next/router";
+
 export default function Admin() {
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
@@ -28,25 +28,24 @@ export default function Admin() {
       fetchUsers();
     }
   }, [isLoggedIn]);
+
   const handleLogin = async () => {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         email,
       });
-      console.log("ADMIN res:",response);
+      console.log("ADMIN res:", response);
       const token = response.data.token;
-      const userRole= response.data.user.isAdmin; //boolean value
+      const userRole = response.data.user.isAdmin; // boolean value
       localStorage.setItem("jwtToken", token);
 
-      if(!userRole){
-        setErrorMessage("You are  not authorized to acces this page.");
-        setTimeout(()=> router.push("/"),2000);
+      if (!userRole) {
+        setErrorMessage("You are not authorized to access this page.");
+        setTimeout(() => router.push("/"), 2000);
         return;
+      } else {
+        setIsLoggedIn(true);
       }
-      else{
-      setIsLoggedIn(true);
-      }
-
     } catch (error) {
       if (error.response?.status === 403) {
         setErrorMessage("Access forbidden. Redirecting to home...");
@@ -194,6 +193,7 @@ export default function Admin() {
                 required
               />
               <Select
+                value={form.manager} // Ensuring the selected manager is set
                 onValueChange={(value) =>
                   setForm((prevForm) => ({ ...prevForm, manager: value }))
                 }
@@ -209,6 +209,7 @@ export default function Admin() {
               </Select>
               <Select
                 multiple
+                value={form.teamMembers} // Ensuring the selected team members are set
                 onValueChange={(values) =>
                   setForm((prevForm) => ({ ...prevForm, teamMembers: values }))
                 }
@@ -242,13 +243,13 @@ export default function Admin() {
               <div key={project.id} className="p-4 border border-gray-300 rounded-lg">
                 <h3 className="text-lg font-bold">{project.name}</h3>
                 <p>{project.description}</p>
-                <p>Manager: {project.name}</p>
+                <p>Manager: {project.managerName}</p>
                 <p>
                   Team Members:{" "}
                   {project.teamMembers.map((member) => member.name).join(", ")}
                 </p>
                 <div className="space-x-2 mt-4">
-                  <Button onClick={() => handleEdit(project)} variant="secondary">
+                  <Button onClick={() => handleEdit(project)} variant="outline">
                     Edit
                   </Button>
                   <Button onClick={() => handleDelete(project.id)} variant="destructive">
