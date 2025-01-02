@@ -38,13 +38,8 @@ export default function Admin() {
       const userRole= response.data.isAdmin; //boolean value
       localStorage.setItem("jwtToken", token);
 
-      if(!userRole){
-        setErrorMessage("You are  not authorized to acces this page.");
-        setTimeout(()=> router.push("/"),2000);
-        return;
-      }
-      else{
-      setIsLoggedIn(true);
+      if(userRole){
+        setIsLoggedIn(true);
       }
 
     } catch (error) {
