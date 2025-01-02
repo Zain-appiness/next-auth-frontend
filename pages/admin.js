@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import {Select, SelectTrigger, SelectContent, SelectItem} from '../components/ui/select';
+import { Select, SelectTrigger, SelectContent, SelectItem } from '../components/ui/select';
 import { useRouter } from "next/router";
+
 export default function Admin() {
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
@@ -14,6 +15,8 @@ export default function Admin() {
     description: "",
     manager: "",
     teamMembers: [],
+    startDate: "",
+    endDate: "",
   });
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [email, setEmail] = useState("");
@@ -28,25 +31,21 @@ export default function Admin() {
       fetchUsers();
     }
   }, [isLoggedIn]);
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
-        email,
-      });
-      console.log("ADMIN res:",response);
+      const response = await axios.post(`${BACKEND_URL}/api/user/login`, { email });
       const token = response.data.token;
-      const userRole= response.data.user.isAdmin; //boolean value
+      const userRole = response.data.user.isAdmin; // boolean value
       localStorage.setItem("jwtToken", token);
 
-      if(!userRole){
-        setErrorMessage("You are  not authorized to acces this page.");
-        setTimeout(()=> router.push("/"),2000);
+      if (!userRole) {
+        setErrorMessage("You are not authorized to access this page.");
+        setTimeout(() => router.push("/"), 2000);
         return;
+      } else {
+        setIsLoggedIn(true);
       }
-      else{
-      setIsLoggedIn(true);
-      }
-
     } catch (error) {
       if (error.response?.status === 403) {
         setErrorMessage("Access forbidden. Redirecting to home...");
@@ -87,10 +86,7 @@ export default function Admin() {
     const { name, value } = e.target;
     setForm((prevForm) => ({
       ...prevForm,
-      [name]:
-        name === "teamMembers"
-          ? [...e.target.selectedOptions].map((opt) => opt.value)
-          : value,
+      [name]: value,
     }));
   };
 
@@ -101,8 +97,8 @@ export default function Admin() {
       const payload = {
         name: form.name,
         description: form.description,
-        startDate: form.startDate || "2024-12-11",
-        endDate: form.endDate || "2024-12-31",
+        startDate: form.startDate,
+        endDate: form.endDate,
         projectManagerId: form.manager,
         teamMemberIds: form.teamMembers.map((id) => parseInt(id)),
       };
@@ -121,7 +117,14 @@ export default function Admin() {
         });
         alert("Project created successfully!");
       }
-      setForm({ name: "", description: "", manager: "", teamMembers: [] });
+      setForm({
+        name: "",
+        description: "",
+        manager: "",
+        teamMembers: [],
+        startDate: "",
+        endDate: "",
+      });
       fetchProjects();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -148,6 +151,8 @@ export default function Admin() {
       description: project.description,
       manager: project.projectManagerId,
       teamMembers: project.teamMembers.map((member) => member.id),
+      startDate: project.startDate,
+      endDate: project.endDate,
     });
   };
 
@@ -190,6 +195,20 @@ export default function Admin() {
                 name="description"
                 placeholder="Project Description"
                 value={form.description}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="date"
+                name="startDate"
+                value={form.startDate}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="date"
+                name="endDate"
+                value={form.endDate}
                 onChange={handleChange}
                 required
               />
@@ -242,7 +261,9 @@ export default function Admin() {
               <div key={project.id} className="p-4 border border-gray-300 rounded-lg">
                 <h3 className="text-lg font-bold">{project.name}</h3>
                 <p>{project.description}</p>
-                <p>Manager: {project.name}</p>
+                <p>Manager: {project.managerName}</p>
+                <p>Start Date: {project.startDate}</p>
+                <p>End Date: {project.endDate}</p>
                 <p>
                   Team Members:{" "}
                   {project.teamMembers.map((member) => member.name).join(", ")}
