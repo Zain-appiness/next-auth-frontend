@@ -43,8 +43,10 @@ export default function Admin() {
         setTimeout(()=> router.push("/"),2000);
         return;
       }
-
+      else{
       setIsLoggedIn(true);
+      }
+
     } catch (error) {
       if (error.response?.status === 403) {
         setErrorMessage("Access forbidden. Redirecting to home...");
