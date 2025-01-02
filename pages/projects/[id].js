@@ -8,17 +8,20 @@ import {
   CardTitle,
 } from '../../components/ui/card';
 import axios from 'axios';
-
+import { format } from 'date-fns'; 
+import { Calendar } from '../../components/ui/calendar'; 
+import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/popover';
 
 export default function ProjectReport() {
   const router = useRouter();
-  const { id, userId,projectName } = router.query;  // Extracting userId and projectId from the URL query
+  const { id, userId, projectName } = router.query; 
   const [report, setReport] = useState({
+    date: null,
     startTime: '',
     endTime: '',
     taskDetails: '',
   });
-  const [error, setError] = useState(null); // To handle errors
+  const [error, setError] = useState(null);
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const handleInputChange = (e) => {
@@ -30,13 +33,12 @@ export default function ProjectReport() {
     e.preventDefault();
 
     try {
-      // Checking if userId and projectId are present
+      
       if (!userId || !id) {
         setError('Missing required parameters');
         return;
       }
 
-      // Assuming already have a token stored in localStorage
       const token = localStorage.getItem('jwtToken');
       if (!token) {
         setError('You are not authenticated');
@@ -46,8 +48,9 @@ export default function ProjectReport() {
       const response = await axios.post(
         `${BACKEND_URL}/api/daily/update/${userId}`,
         {
-          projectId: id, // Passing the projectId from the URL\
-          ...report,      // Spread the form data
+          projectId: id,
+          ...report, 
+          date: report.date ? format(report.date, 'yyyy-MM-dd') : null, 
         },
         {
           headers: {
@@ -57,7 +60,7 @@ export default function ProjectReport() {
       );
 
       console.log('Report submitted:', response.data);
-      router.push(`/profile/?userId=${userId}`); 
+      router.push(`/profile/?userId=${userId}`);
     } catch (err) {
       console.error('Error submitting the report:', err);
       setError('Failed to submit the report');
@@ -73,6 +76,27 @@ export default function ProjectReport() {
         <CardContent>
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block mb-2">Date</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    {report.date
+                      ? format(report.date, 'yyyy-MM-dd')
+                      : 'Select a date'}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Calendar
+                    mode="single"
+                    selected={report.date}
+                    onSelect={(selectedDate) =>
+                      setReport((prev) => ({ ...prev, date: selectedDate }))
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
             <div>
               <label className="block mb-2">Start Time</label>
               <input
