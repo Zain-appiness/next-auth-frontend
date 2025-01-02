@@ -184,6 +184,22 @@ export default function Admin() {
                 onChange={handleChange}
                 required
               />
+              <Input
+                type="date"
+                name="startDate"
+                placeholder="Start Date"
+                value={form.startDate || ""}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="date"
+                name="endDate"
+                placeholder="End Date"
+                value={form.endDate || ""}
+                onChange={handleChange}
+                required
+              />
               <Select
                 options={users.map((user) => ({
                   value: user.id,
