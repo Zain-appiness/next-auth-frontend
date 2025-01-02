@@ -12,7 +12,7 @@ import axios from 'axios';
 
 export default function ProjectReport() {
   const router = useRouter();
-  const { id, userId,projectname } = router.query;  // Extracting userId and projectId from the URL query
+  const { id, userId,projectName } = router.query;  // Extracting userId and projectId from the URL query
   const [report, setReport] = useState({
     startTime: '',
     endTime: '',
@@ -68,7 +68,7 @@ export default function ProjectReport() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-[500px] p-4">
         <CardHeader>
-          <CardTitle className="text-xl">Project Report for {projectname}</CardTitle>
+          <CardTitle className="text-xl">Project Report for {projectName || id}</CardTitle>
         </CardHeader>
         <CardContent>
           {error && <p className="text-red-500 mb-4">{error}</p>}
