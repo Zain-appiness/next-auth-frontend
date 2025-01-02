@@ -192,37 +192,42 @@ export default function Admin() {
                 onChange={handleChange}
                 required
               />
-              <Select
-                value={form.manager} // Ensuring the selected manager is set
-                onValueChange={(value) =>
-                  setForm((prevForm) => ({ ...prevForm, manager: value }))
-                }
+              {/* select starts */}
+
+              <div className="mb-4">
+              <select
+                name="manager"
+                value={form.manager}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                required
               >
-                <SelectTrigger>Select Manager</SelectTrigger>
-                <SelectContent>
-                  {users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
+                <option value="">Select Manager</option>
+                {Array.isArray(users) && users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <select
+                name="teamMembers"
+                value={form.teamMembers}
+                onChange={handleChange}
                 multiple
-                value={form.teamMembers} // Ensuring the selected team members are set
-                onValueChange={(values) =>
-                  setForm((prevForm) => ({ ...prevForm, teamMembers: values }))
-                }
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                required
               >
-                <SelectTrigger>Select Team Members</SelectTrigger>
-                <SelectContent>
-                  {users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            { /* select ends */}
+            
               <Button type="submit" className="w-full">
                 {editingProjectId ? "Update Project" : "Create Project"}
               </Button>
