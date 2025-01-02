@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select"; // Importing react-select
 import axios from "axios";
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
-import { Textarea } from '../components/ui/textarea';
-import { Select, SelectTrigger, SelectContent, SelectItem } from '../components/ui/select';
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
 import { useRouter } from "next/router";
 
 export default function Admin() {
@@ -192,43 +192,33 @@ export default function Admin() {
                 onChange={handleChange}
                 required
               />
-              {/* select starts */}
-
-              <div className="mb-4">
-              <select
-                name="manager"
-                value={form.manager}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                required
-              >
-                <option value="">Select Manager</option>
-                {Array.isArray(users) && users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <select
-                name="teamMembers"
-                value={form.teamMembers}
-                onChange={handleChange}
-                multiple
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                required
-              >
-                <option value="">Select Team members</option>
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            { /* select ends */}
-
+              <Select
+                options={users.map((user) => ({
+                  value: user.id,
+                  label: user.name,
+                }))}
+                value={form.manager ? { value: form.manager, label: form.managerName } : null}
+                onChange={(selectedOption) => setForm((prevForm) => ({ ...prevForm, manager: selectedOption.value }))}
+                placeholder="Select Manager"
+              />
+              <Select
+                isMulti
+                options={users.map((user) => ({
+                  value: user.id,
+                  label: user.name,
+                }))}
+                value={form.teamMembers.map((id) => ({
+                  value: id,
+                  label: users.find((user) => user.id === id)?.name,
+                }))}
+                onChange={(selectedOptions) =>
+                  setForm((prevForm) => ({
+                    ...prevForm,
+                    teamMembers: selectedOptions.map((option) => option.value),
+                  }))
+                }
+                placeholder="Select Team Members"
+              />
               <Button type="submit" className="w-full">
                 {editingProjectId ? "Update Project" : "Create Project"}
               </Button>
