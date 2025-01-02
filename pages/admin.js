@@ -1,7 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
+import { Textarea } from '../components/ui/textarea';
+import {Select, SelectTrigger, SelectContent, SelectItem} from '../components/ui/select';
+import { useRouter } from "next/router";
 export default function Admin() {
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
@@ -9,11 +13,13 @@ export default function Admin() {
     name: "",
     description: "",
     manager: "",
-    teamMembers: [], // This should handle an array of selected team members
+    teamMembers: [],
   });
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [email, setEmail] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
@@ -22,17 +28,29 @@ export default function Admin() {
       fetchUsers();
     }
   }, [isLoggedIn]);
-
   const handleLogin = async () => {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         email,
       });
       const token = response.data.token;
+      const userRole= response.data.isAdmin; //boolean value
       localStorage.setItem("jwtToken", token);
+
+      if(!userRole){
+        setErrorMessage("You are  not authorized to acces this page.");
+        setTimeout(()=> router.push("/"),2000);
+        return;
+      }
+
       setIsLoggedIn(true);
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error.response?.status === 403) {
+        setErrorMessage("Access forbidden. Redirecting to home...");
+        setTimeout(() => router.push("/"), 2000);
+      } else {
+        console.error("Login failed:", error);
+      }
     }
   };
 
@@ -68,7 +86,7 @@ export default function Admin() {
       ...prevForm,
       [name]:
         name === "teamMembers"
-          ? [...e.target.selectedOptions].map((opt) => opt.value) // Handle multiple selections
+          ? [...e.target.selectedOptions].map((opt) => opt.value)
           : value,
     }));
   };
@@ -77,14 +95,15 @@ export default function Admin() {
     e.preventDefault();
     try {
       const token = getToken();
-      const payload={
+      const payload = {
         name: form.name,
+        description: form.description,
         startDate: form.startDate || "2024-12-11",
         endDate: form.endDate || "2024-12-31",
         projectManagerId: form.manager,
         teamMemberIds: form.teamMembers.map((id) => parseInt(id)),
       };
-      
+
       if (editingProjectId) {
         await axios.put(
           `${BACKEND_URL}/api/project/${editingProjectId}`,
@@ -124,8 +143,8 @@ export default function Admin() {
     setForm({
       name: project.name,
       description: project.description,
-      manager: project.projectManagerId, // Make sure manager is stored as ID
-      teamMembers: project.teamMembers.map((member) => member.id), // Store only IDs for teamMembers
+      manager: project.projectManagerId,
+      teamMembers: project.teamMembers.map((member) => member.id),
     });
   };
 
@@ -134,22 +153,19 @@ export default function Admin() {
       {!isLoggedIn ? (
         <div className="max-w-md mx-auto p-4 border border-gray-300 rounded-lg">
           <h1 className="text-xl font-bold mb-4">Admin Login</h1>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           <div className="mb-4">
-            <input
+            <Input
               type="email"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg"
               required
             />
           </div>
-          <button
-            onClick={handleLogin}
-            className="w-full p-2 bg-blue-500 text-white rounded-lg"
-          >
+          <Button onClick={handleLogin} className="w-full">
             Login
-          </button>
+          </Button>
         </div>
       ) : (
         <>
@@ -159,73 +175,61 @@ export default function Admin() {
               {editingProjectId ? "Edit Project" : "Create Project"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="mb-4">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Project Name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <textarea
-                  name="description"
-                  placeholder="Project Description"
-                  value={form.description}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <select
-                  name="manager"
-                  value={form.manager}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  required
-                >
-                  <option value="">Select Manager</option>
-                  {Array.isArray(users) && users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4">
-                <select
-                  name="teamMembers"
-                  value={form.teamMembers}
-                  onChange={handleChange}
-                  multiple
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  required
-                >
-                  {users.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full p-2 bg-blue-500 text-white rounded-lg"
+              <Input
+                type="text"
+                name="name"
+                placeholder="Project Name"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+              <Textarea
+                name="description"
+                placeholder="Project Description"
+                value={form.description}
+                onChange={handleChange}
+                required
+              />
+              <Select
+                onValueChange={(value) =>
+                  setForm((prevForm) => ({ ...prevForm, manager: value }))
+                }
               >
+                <SelectTrigger>Select Manager</SelectTrigger>
+                <SelectContent>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                multiple
+                onValueChange={(values) =>
+                  setForm((prevForm) => ({ ...prevForm, teamMembers: values }))
+                }
+              >
+                <SelectTrigger>Select Team Members</SelectTrigger>
+                <SelectContent>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button type="submit" className="w-full">
                 {editingProjectId ? "Update Project" : "Create Project"}
-              </button>
+              </Button>
               {editingProjectId && (
-                <button
+                <Button
                   type="button"
+                  variant="secondary"
                   onClick={() => setEditingProjectId(null)}
-                  className="w-full p-2 border border-gray-300 rounded-lg mt-2"
                 >
                   Cancel
-                </button>
+                </Button>
               )}
             </form>
           </div>
@@ -241,18 +245,12 @@ export default function Admin() {
                   {project.teamMembers.map((member) => member.name).join(", ")}
                 </p>
                 <div className="space-x-2 mt-4">
-                  <button
-                    onClick={() => handleEdit(project)}
-                    className="p-2 bg-yellow-500 text-white rounded-lg"
-                  >
+                  <Button onClick={() => handleEdit(project)} variant="secondary">
                     Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(project.id)}
-                    className="p-2 bg-red-500 text-white rounded-lg"
-                  >
+                  </Button>
+                  <Button onClick={() => handleDelete(project.id)} variant="destructive">
                     Delete
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}

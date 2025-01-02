@@ -30,13 +30,13 @@ export default function ProjectReport() {
     e.preventDefault();
 
     try {
-      // Check if userId and projectId are present
+      // Checking if userId and projectId are present
       if (!userId || !id) {
         setError('Missing required parameters');
         return;
       }
 
-      // Assuming you already have a token stored in localStorage
+      // Assuming already have a token stored in localStorage
       const token = localStorage.getItem('jwtToken');
       if (!token) {
         setError('You are not authenticated');
@@ -57,8 +57,7 @@ export default function ProjectReport() {
       );
 
       console.log('Report submitted:', response.data);
-      // Optionally, redirect to another page or show success
-      router.push(`/profile/?userId=${userId}`); // Redirect back to the project page
+      router.push(`/profile/?userId=${userId}`); 
     } catch (err) {
       console.error('Error submitting the report:', err);
       setError('Failed to submit the report');
