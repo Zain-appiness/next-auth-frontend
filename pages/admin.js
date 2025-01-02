@@ -35,7 +35,9 @@ export default function Admin() {
       });
       console.log("ADMIN res:",response);
       const token = response.data.token;
-      const userRole= response.data.isAdmin; //boolean value
+      const userRole= response.data.isAdmin; 
+      console.log(token);
+      console.log(userRole);
       localStorage.setItem("jwtToken", token);
 
       if(userRole){
