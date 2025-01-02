@@ -1,12 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Select, SelectTrigger, SelectContent, SelectItem } from '../components/ui/select';
+import {Select, SelectTrigger, SelectContent, SelectItem} from '../components/ui/select';
 import { useRouter } from "next/router";
-
 export default function Admin() {
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
@@ -14,9 +13,7 @@ export default function Admin() {
     name: "",
     description: "",
     manager: "",
-    teamMembers: [],  // Ensure teamMembers is initialized as an array
-    startDate: "",
-    endDate: "",
+    teamMembers: [],
   });
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [email, setEmail] = useState("");
@@ -31,21 +28,25 @@ export default function Admin() {
       fetchUsers();
     }
   }, [isLoggedIn]);
-
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/user/login`, { email });
+      const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
+        email,
+      });
+      console.log("ADMIN res:",response);
       const token = response.data.token;
-      const userRole = response.data.user.isAdmin; // boolean value
+      const userRole= response.data.user.isAdmin; //boolean value
       localStorage.setItem("jwtToken", token);
 
-      if (!userRole) {
-        setErrorMessage("You are not authorized to access this page.");
-        setTimeout(() => router.push("/"), 2000);
+      if(!userRole){
+        setErrorMessage("You are  not authorized to acces this page.");
+        setTimeout(()=> router.push("/"),2000);
         return;
-      } else {
-        setIsLoggedIn(true);
       }
+      else{
+      setIsLoggedIn(true);
+      }
+
     } catch (error) {
       if (error.response?.status === 403) {
         setErrorMessage("Access forbidden. Redirecting to home...");
@@ -86,7 +87,10 @@ export default function Admin() {
     const { name, value } = e.target;
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [name]:
+        name === "teamMembers"
+          ? [...e.target.selectedOptions].map((opt) => opt.value)
+          : value,
     }));
   };
 
@@ -97,8 +101,8 @@ export default function Admin() {
       const payload = {
         name: form.name,
         description: form.description,
-        startDate: form.startDate,
-        endDate: form.endDate,
+        startDate: form.startDate || "2024-12-11",
+        endDate: form.endDate || "2024-12-31",
         projectManagerId: form.manager,
         teamMemberIds: form.teamMembers.map((id) => parseInt(id)),
       };
@@ -117,14 +121,7 @@ export default function Admin() {
         });
         alert("Project created successfully!");
       }
-      setForm({
-        name: "",
-        description: "",
-        manager: "",
-        teamMembers: [], // Reset teamMembers to an empty array
-        startDate: "",
-        endDate: "",
-      });
+      setForm({ name: "", description: "", manager: "", teamMembers: [] });
       fetchProjects();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -151,8 +148,6 @@ export default function Admin() {
       description: project.description,
       manager: project.projectManagerId,
       teamMembers: project.teamMembers.map((member) => member.id),
-      startDate: project.startDate,
-      endDate: project.endDate,
     });
   };
 
@@ -198,22 +193,7 @@ export default function Admin() {
                 onChange={handleChange}
                 required
               />
-              <Input
-                type="date"
-                name="startDate"
-                value={form.startDate}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                type="date"
-                name="endDate"
-                value={form.endDate}
-                onChange={handleChange}
-                required
-              />
               <Select
-                value={form.manager} // Ensure value is set correctly
                 onValueChange={(value) =>
                   setForm((prevForm) => ({ ...prevForm, manager: value }))
                 }
@@ -229,7 +209,6 @@ export default function Admin() {
               </Select>
               <Select
                 multiple
-                value={form.teamMembers} // Ensure value is set correctly
                 onValueChange={(values) =>
                   setForm((prevForm) => ({ ...prevForm, teamMembers: values }))
                 }
@@ -260,15 +239,19 @@ export default function Admin() {
           <h2 className="text-xl font-bold mb-4">Project List</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {projects.map((project) => (
-              <div key={project.id} className="border p-4 rounded-lg">
-                <h3 className="text-lg font-semibold">{project.name}</h3>
+              <div key={project.id} className="p-4 border border-gray-300 rounded-lg">
+                <h3 className="text-lg font-bold">{project.name}</h3>
                 <p>{project.description}</p>
-                <div className="mt-4 flex justify-between">
-                  <Button onClick={() => handleEdit(project)}>Edit</Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDelete(project.id)}
-                  >
+                <p>Manager: {project.name}</p>
+                <p>
+                  Team Members:{" "}
+                  {project.teamMembers.map((member) => member.name).join(", ")}
+                </p>
+                <div className="space-x-2 mt-4">
+                  <Button onClick={() => handleEdit(project)} variant="secondary">
+                    Edit
+                  </Button>
+                  <Button onClick={() => handleDelete(project.id)} variant="destructive">
                     Delete
                   </Button>
                 </div>
