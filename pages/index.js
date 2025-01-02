@@ -7,7 +7,6 @@ import { MailOpen } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
@@ -37,7 +36,6 @@ export default function Home() {
       <Card className="w-[500px] h-[500px] flex flex-col justify-center">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">SIGN-IN WITH GOOGLE WITH YOUR APPINESS EMAIL</CardTitle>
-          <CardDescription className="text-gray-600">SIGN-IN WITH US</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col justify-center items-center space-y-4 h-full">
           {!session ? (
