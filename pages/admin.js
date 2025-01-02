@@ -100,8 +100,8 @@ export default function Admin() {
       const payload = {
         name: form.name,
         description: form.description,
-        startDate: form.startDate || "2024-12-11",
-        endDate: form.endDate || "2024-12-31",
+        startDate: form.startDate ,
+        endDate: form.endDate,
         projectManagerId: form.manager,
         teamMemberIds: form.teamMembers.map((id) => parseInt(id)),
       };
@@ -144,7 +144,6 @@ export default function Admin() {
     setEditingProjectId(project.id);
     setForm({
       name: project.name,
-      description: project.description,
       manager: project.projectManagerId,
       teamMembers: project.teamMembers.map((member) => member.id),
     });
@@ -182,13 +181,6 @@ export default function Admin() {
                 name="name"
                 placeholder="Project Name"
                 value={form.name}
-                onChange={handleChange}
-                required
-              />
-              <Textarea
-                name="description"
-                placeholder="Project Description"
-                value={form.description}
                 onChange={handleChange}
                 required
               />
