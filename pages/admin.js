@@ -219,6 +219,7 @@ export default function Admin() {
                 className="w-full p-2 border border-gray-300 rounded-lg"
                 required
               >
+                <option value="">Select Team members</option>
                 {users.map((user) => (
                   <option key={user.id} value={user.id}>
                     {user.name}
@@ -227,7 +228,7 @@ export default function Admin() {
               </select>
             </div>
             { /* select ends */}
-            
+
               <Button type="submit" className="w-full">
                 {editingProjectId ? "Update Project" : "Create Project"}
               </Button>
