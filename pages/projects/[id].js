@@ -17,6 +17,7 @@ export default function ProjectReport() {
     startTime: '',
     endTime: '',
     taskDetails: '',
+    date: null,
   });
   const [error, setError] = useState(null); // To handle errors
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -73,6 +74,16 @@ export default function ProjectReport() {
         <CardContent>
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+              <label className="block mb-2">Date</label>
+              <input
+                type="date"
+                name="date"
+                value={report.date}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
             <div>
               <label className="block mb-2">Start Time</label>
               <input
