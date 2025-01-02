@@ -33,6 +33,7 @@ export default function Admin() {
       const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         email,
       });
+      console.log("ADMIN res:",response);
       const token = response.data.token;
       const userRole= response.data.isAdmin; //boolean value
       localStorage.setItem("jwtToken", token);
