@@ -75,7 +75,7 @@ export default function ProjectReport() {
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-              <label className="block mb-2">Date</label>
+              <label className="block mb-2">Pich A Date</label>
               <input
                 type="date"
                 name="date"

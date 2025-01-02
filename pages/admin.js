@@ -184,6 +184,7 @@ export default function Admin() {
                 onChange={handleChange}
                 required
               />
+              <label className="block mb-2">Start Date</label>
               <Input
                 type="date"
                 name="startDate"
@@ -192,6 +193,7 @@ export default function Admin() {
                 onChange={handleChange}
                 required
               />
+              <label className="block mb-2">End Date</label>
               <Input
                 type="date"
                 name="endDate"
