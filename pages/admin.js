@@ -198,7 +198,13 @@ export default function Admin() {
                   label: user.name,
                 }))}
                 value={form.manager ? { value: form.manager, label: form.managerName } : null}
-                onChange={(selectedOption) => setForm((prevForm) => ({ ...prevForm, manager: selectedOption.value }))}
+                onChange={(selectedOption) => {
+                  setForm((prevForm) => ({
+                    ...prevForm,
+                    manager: selectedOption.value,
+                    managerName: selectedOption.label, // Update managerName on selection
+                  }));
+                }}
                 placeholder="Select Manager"
               />
               <Select
