@@ -35,13 +35,16 @@ export default function Admin() {
       });
       console.log("ADMIN res:",response);
       const token = response.data.token;
-      const userRole= response.data.isAdmin; 
-      console.log(token);
-      console.log(userRole);
+      const userRole= response.data.user.isAdmin; //boolean value
       localStorage.setItem("jwtToken", token);
 
-      if(userRole){
-        setIsLoggedIn(true);
+      if(!userRole){
+        setErrorMessage("You are  not authorized to acces this page.");
+        setTimeout(()=> router.push("/"),2000);
+        return;
+      }
+      else{
+      setIsLoggedIn(true);
       }
 
     } catch (error) {
