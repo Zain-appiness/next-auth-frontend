@@ -22,7 +22,6 @@
     "next": "15.1.0",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
-    "react-day-picker": "^8.10.1",
     "react-dom": "^19.0.0",
     "react-select": "^5.9.0",
     "shadcn-ui": "^0.9.4",
