@@ -80,8 +80,10 @@ export default function Dashboard() {
   };
 
   const handleNavigateToProfile = () => {
-    if (userId) {
-      router.push(`/profile?userId=${userId}`);
+    const user = useAuthStore.getState().user; // Retrieve the current user from the store
+    const email = user?.email;
+    if (userId && email) {
+      router.push(`/profile?userId=${userId}&email=${encodeURIComponent(email)}`);
     } else {
       console.error("User ID not found.");
     }

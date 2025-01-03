@@ -7,45 +7,72 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const Profile = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const userId = router.query.userId || session?.user?.id; // Fallback to session user ID
+  const userId = router.query.userId || session?.user?.id; 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
+  const email = router.query.email;
   const [userProjects, setUserProjects] = useState([]);
   const [userData, setUserData] = useState(null);
 
+  // Handle login
   useEffect(() => {
+    const handleLogin = async () => {
+      try {
+        if (!email) {
+          console.error("Email is missing for login.");
+          return;
+        }
+
+        const res = await axios.post(`${BACKEND_URL}/api/user/login`, {
+          email,
+        });
+
+        console.log("User res:", res);
+        const token = res.data.token;
+        localStorage.setItem("jwtToken", token);
+      } catch (error) {
+        console.error("Error Login:", error);
+      }
+    };
+
+    if (email) {
+      handleLogin();
+    }
+  }, [email, BACKEND_URL]); 
+
+  // Fetch profile data
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const token = localStorage.getItem("jwtToken");
+      if (!userId) {
+        console.error("User ID is missing");
+        return;
+      }
+
+      try {
+        console.log(`Fetching profile for userId: ${userId}`);
+        const response = await axios.get(`${BACKEND_URL}/api/project/user/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("Profile data:", response.data);
+
+        // Merging  managedProjects and teamProjects into a single array
+        const allProjects = [
+          ...(response.data.managedProjects || []),
+          ...(response.data.teamProjects || []),
+        ];
+
+        setUserProjects(allProjects);
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
     if (userId) {
       fetchProfileData();
     }
-  }, [userId]);
-
-  const fetchProfileData = async () => {
-    const token = localStorage.getItem("jwtToken");
-    if (!userId) {
-      console.error("User ID is missing");
-      return;
-    }
-
-    try {
-      console.log(`Fetching profile for userId: ${userId}`);
-      const response = await axios.get(`${BACKEND_URL}/api/project/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log("Profile data:", response.data);
-
-      // Merge managedProjects and teamProjects into a single array
-      const allProjects = [
-        ...(response.data.managedProjects || []),
-        ...(response.data.teamProjects || []),
-      ];
-
-      setUserProjects(allProjects);
-      setUserData(response.data); // Store user-specific data
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
+  }, [userId, BACKEND_URL]); 
 
   return (
     <div className="container mx-auto p-6">
