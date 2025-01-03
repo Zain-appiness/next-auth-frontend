@@ -141,7 +141,7 @@ const Profile = () => {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         {/* User Profile Card */}
-        <Card className="mb-6 font-semibold bg-cyan-300 text-white">
+        <Card className="mb-6 font-semibold bg-cyan-300 text-black">
           <CardHeader>
             <CardTitle>{userData?.name || session?.user?.name || "User"}</CardTitle>
             <CardDescription>{userData?.email || session?.user?.email || "No Email"}</CardDescription>
@@ -153,6 +153,7 @@ const Profile = () => {
 
         {/* User Projects */}
         <h2 className="text-2xl font-semibold text-cyan-300 mb-4">Your Projects</h2>
+        <p className="text-xl font-semibold text-cyan-300 mb-4">Click on individual projects to send daily report</p>
         {userProjects.length > 0 ? (
           <ul className="space-y-4">
             {userProjects.map((project) => (
