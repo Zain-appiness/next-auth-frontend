@@ -91,7 +91,7 @@ export default function Dashboard() {
         alt="Background"
         className="absolute inset-0 h-full w-full object-cover opacity-70"
       />
-      <div className="absolute inset-0 bg-white bg-opacity-70"></div>
+      <div className="absolute inset-0 bg-white bg-opacity-70">
       <Card className="relative z-10 w-full max-w-md p-8 shadow-xl bg-white rounded-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-cyan-300">
@@ -111,6 +111,7 @@ export default function Dashboard() {
           
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

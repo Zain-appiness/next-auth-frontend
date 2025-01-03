@@ -66,6 +66,12 @@ export default function ProjectReport() {
   };
 
   return (
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-300">
+    <img
+      src="https://media.licdn.com/dms/image/v2/C4D0BAQGpHXmffW4TWw/company-logo_200_200/company-logo_200_200/0/1656923939573/appiness_interactive_pvt_ltd__logo?e=2147483647&v=beta&t=TdpEPbqJKzj1DLuF75aPDmButAOmUAIla1F-lvS1R_8"
+      alt="Background"
+      className="absolute inset-0 h-full w-full object-cover opacity-70"
+    />
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-[500px] p-4">
         <CardHeader>
@@ -113,12 +119,13 @@ export default function ProjectReport() {
                 className="w-full p-2 border rounded"
               ></textarea>
             </div>
-            <Button type="submit" className="w-full bg-blue-500 text-white">
+            <Button type="submit" className="w-full bg-cyan-400 text-white hover:bg-white hover:text-black">
               Submit Report
             </Button>
           </form>
         </CardContent>
       </Card>
     </div>
+  </div>
   );
 }
