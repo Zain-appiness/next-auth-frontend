@@ -5,7 +5,12 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { useRouter } from "next/router";
-
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 export default function Admin() {
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
@@ -159,10 +164,20 @@ export default function Admin() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-300">
+      
       {!isLoggedIn ? (
-        <div className="max-w-md mx-auto p-4 border border-gray-300 rounded-lg">
-          <h1 className="text-xl font-bold mb-4">Admin Login</h1>
+         <div className="flex flex-col items-center justify-center flex-1">
+         <Card className="w-full max-w-md shadow-lg bg-white rounded-xl border-2 border-black">
+           <CardHeader className="text-center p-6">
+             <CardTitle className="text-2xl font-semibold text-cyan-700">
+               Admin Login
+             </CardTitle>
+             <p className="text-sm text-gray-500 mt-2">
+               Use your Appiness email to access the dashboard
+             </p>
+           </CardHeader>
+           <CardContent className="flex flex-col items-center justify-center space-y-6 p-6">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           <div className="mb-4">
             <Input
@@ -173,10 +188,13 @@ export default function Admin() {
               required
             />
           </div>
-          <Button onClick={handleLogin} className="w-full">
+          <Button onClick={handleLogin}  className="w-full py-3 bg-cyan-300 text-black text-lg rounded-lg hover:bg-black hover:text-white flex items-center justify-center">
             Login
           </Button>
-        </div>
+           </CardContent>
+         </Card>
+        
+       </div>
       ) : (
         <>
           <h1 className="text-2xl font-bold mb-4">Project Management</h1>
