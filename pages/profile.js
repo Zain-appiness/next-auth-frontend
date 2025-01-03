@@ -38,11 +38,12 @@ const Profile = () => {
       handleLogin();
     }
   }, [email, BACKEND_URL]); 
-
+  
+  const getToken = () => localStorage.getItem("jwtToken");
   // Fetch profile data
   useEffect(() => {
     const fetchProfileData = async () => {
-      const token = localStorage.getItem("jwtToken");
+      const token = getToken();
       if (!userId) {
         console.error("User ID is missing");
         return;
