@@ -89,39 +89,54 @@ const Profile = () => {
   return (
     <div className="flex h-screen bg-gray-50 text-black">
       {/* Sidebar */}
-      <aside className="w-64 bg-cyan-300 p-6 flex flex-col justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-black mb-6">Navigation</h2>
-          <ul className="space-y-4 text-black">
-            <li
-              className="cursor-pointer hover:bg-white hover:text-blacke p-2 rounded"
-              onClick={() => router.push("/dashboard")}
-            >
-              Dashboard
-            </li>
-            <li
-              className="cursor-pointer hover:bg-white hover:text-blacke p-2 rounded"
-              onClick={() => router.push("/profile")}
-            >
-              Profile
-            </li>
-            <li
-              className="cursor-pointer hover:bg-white hover:text-blacke p-2 rounded"
-              onClick={() => router.push("/profile")}
-            >
-              Projects
-            </li>
+    <aside className="w-64 bg-cyan-300 p-6 flex flex-col justify-between">
+    <div>
+      <h2 className="text-xl font-bold text-black mb-6">Navigation</h2>
+      <ul className="space-y-4 text-black">
+        <li
+          className="cursor-pointer hover:bg-white hover:text-black p-2 rounded"
+          onClick={() => router.push("/dashboard")}
+        >
+          Dashboard
+        </li>
+        <li
+          className="cursor-pointer hover:bg-white hover:text-black p-2 rounded"
+          onClick={() => router.push("/profile")}
+        >
+          Profile
+        </li>
+        <li className="cursor-pointer hover:bg-white hover:text-black p-2 rounded">
+          Projects
+          {/* Sub-section of Projects */}
+          <ul className="ml-4 mt-2 space-y-2">
+            {userProjects.map((project) => (
+              <li
+                key={project.id}
+                className="cursor-pointer hover:text-cyan-600"
+                onClick={() =>
+                  router.push(
+                    `/projects/${project.id}?userId=${userId}&projectName=${encodeURIComponent(
+                      project.name
+                    )}`
+                  )
+                }
+              >
+                {project.name}
+              </li>
+            ))}
           </ul>
-        </div>
-        <div>
-          <button
-            className="bg-red-500 text-white py-2 px-4 rounded  hover:bg-white hover:text-black"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-        </div>
-      </aside>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <button
+        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-white hover:text-black"
+        onClick={handleLogout}
+      >
+        Logout
+       </button>
+      </div>
+    </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
