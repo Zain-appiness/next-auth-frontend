@@ -82,7 +82,6 @@ const Profile = () => {
   }, [userId, BACKEND_URL]);
 
   const handleLogout = async () => {
-    setUser(null);
     await signOut({ callbackUrl: '/' });
   };
 
