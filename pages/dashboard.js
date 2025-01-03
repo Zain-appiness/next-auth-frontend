@@ -2,8 +2,8 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useAuthStore } from '../stores/authStores';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'; 
-import { MailOpen } from "lucide-react";
+import { useRouter } from 'next/router';
+import { MailOpen } from 'lucide-react';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import {
@@ -12,7 +12,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from '../components/ui/card';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -21,7 +21,6 @@ export default function Dashboard() {
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
 
   useEffect(() => {
     if (status === 'loading') {
@@ -40,7 +39,6 @@ export default function Dashboard() {
         .then((response) => {
           if (response.data) {
             setUserId(response.data.id);
-            console.log("get",response.data.id)
           }
         })
         .catch((error) => {
@@ -53,7 +51,6 @@ export default function Dashboard() {
               })
               .then((signupResponse) => {
                 setUserId(signupResponse.data.id);
-                console.log("post",signupResponse.data.id)
               })
               .catch((err) => console.error('Error storing user data:', err));
           } else {
@@ -66,7 +63,6 @@ export default function Dashboard() {
     }
   }, [status, session, setUser, router]);
 
-  // Handle query parameter for userId
   useEffect(() => {
     const queryUserId = router.query.userId;
     if (queryUserId && !userId) {
@@ -76,16 +72,16 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     setUser(null);
-    await signOut({ callbackUrl: "/" });
+    await signOut({ callbackUrl: '/' });
   };
 
   const handleNavigateToProfile = () => {
-    const user = useAuthStore.getState().user; // Retrieve the current user from the store
+    const user = useAuthStore.getState().user;
     const email = user?.email;
     if (userId && email) {
       router.push(`/profile?userId=${userId}&email=${encodeURIComponent(email)}`);
     } else {
-      console.error("User ID not found.");
+      console.error('User ID not found.');
     }
   };
 
@@ -94,24 +90,34 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-[500px] h-[500px] flex flex-col justify-center">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-300">
+      <img
+        src="https://media.licdn.com/dms/image/v2/C4D0BAQGpHXmffW4TWw/company-logo_200_200/company-logo_200_200/0/1656923939573/appiness_interactive_pvt_ltd__logo?e=2147483647&v=beta&t=TdpEPbqJKzj1DLuF75aPDmButAOmUAIla1F-lvS1R_8"
+        alt="Background"
+        className="absolute inset-0 h-full w-full object-cover opacity-70"
+      />
+      <div className="absolute inset-0 bg-white bg-opacity-70"></div>
+      <Card className="relative z-10 w-full max-w-md p-8 shadow-xl bg-white rounded-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Hello, {session?.user?.name || 'User'}!</CardTitle>
-          <CardDescription className="text-gray-600">SIGN-IN AS {session?.user?.name || 'User'}</CardDescription>
+          <CardTitle className="text-2xl font-bold text-cyan-300">
+            Welcome, {session?.user?.name || 'User'}!
+          </CardTitle>
+          <CardDescription className="text-gray-700">
+            You are authenticated by your email: {session?.user?.email}.
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col justify-center items-center space-y-4 h-full">
+        <CardContent className="mt-6 space-y-6">
           <Button
             onClick={handleNavigateToProfile}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="w-full py-3 text-lg bg-cyan-400 text-black rounded-lg  hover:bg-black hover:text-white"
           >
-            Go to Profile
+            View Your Projects
           </Button>
           <Button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className="w-full py-3 text-lg bg-red-500 text-white rounded-lg hover:bg-red-600"
           >
-            <MailOpen /> Logout
+            <MailOpen className="inline-block mr-2" /> Logout
           </Button>
         </CardContent>
       </Card>
