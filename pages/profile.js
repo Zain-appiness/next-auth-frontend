@@ -82,26 +82,26 @@ const Profile = () => {
   }, [userId, BACKEND_URL]);
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-800">
+    <div className="flex h-screen bg-gray-50 text-black">
       {/* Sidebar */}
-      <aside className="w-64 bg-indigo-600 p-6 flex flex-col justify-between">
+      <aside className="w-64 bg-cyan-500 p-6 flex flex-col justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white mb-6">Navigation</h2>
-          <ul className="space-y-4 text-white">
+          <h2 className="text-xl font-bold text-black mb-6">Navigation</h2>
+          <ul className="space-y-4 text-black">
             <li
-              className="cursor-pointer hover:bg-indigo-700 p-2 rounded"
+              className="cursor-pointer hover:bg-cyan-500 p-2 rounded"
               onClick={() => router.push("/dashboard")}
             >
               Dashboard
             </li>
             <li
-              className="cursor-pointer hover:bg-indigo-700 p-2 rounded"
+              className="cursor-pointer hover:bg-cyan-500 p-2 rounded"
               onClick={() => router.push("/profile")}
             >
               Profile
             </li>
             <li
-              className="cursor-pointer hover:bg-indigo-700 p-2 rounded"
+              className="cursor-pointer hover:bg-cyan-500 p-2 rounded"
               onClick={() => router.push("/profile")}
             >
               Projects
@@ -110,7 +110,7 @@ const Profile = () => {
         </div>
         <div>
           <button
-            className="bg-indigo-800 text-white py-2 px-4 rounded  hover:bg-indigo-700"
+            className="bg-cyan-500 text-white py-2 px-4 rounded  hover:bg-indigo-500"
             onClick={() => router.push("/logout")}
           >
             Logout
@@ -121,7 +121,7 @@ const Profile = () => {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         {/* User Profile Card */}
-        <Card className="mb-6 bg-indigo-600 text-white">
+        <Card className="mb-6 bg-cyan-500 text-white">
           <CardHeader>
             <CardTitle>{userData?.name || session?.user?.name || "User"}</CardTitle>
             <CardDescription>{userData?.email || session?.user?.email || "No Email"}</CardDescription>
@@ -132,13 +132,13 @@ const Profile = () => {
         </Card>
 
         {/* User Projects */}
-        <h2 className="text-2xl font-semibold text-indigo-600 mb-4">Your Projects</h2>
+        <h2 className="text-2xl font-semibold text-cyan-500 mb-4">Your Projects</h2>
         {userProjects.length > 0 ? (
           <ul className="space-y-4">
             {userProjects.map((project) => (
               <li
                 key={project.id}
-                className="p-4 bg-indigo-700 rounded cursor-pointer hover:bg-indigo-800 text-white"
+                className="p-4 bg-cyan-500 rounded cursor-pointer hover:bg-indigo-500 text-white"
                 onClick={() =>
                   router.push(
                     `/projects/${project.id}?userId=${userId}&projectName=${encodeURIComponent(
