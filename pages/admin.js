@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Select from "react-select"; // Importing react-select
+import Select from "react-select";
 import axios from "axios";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -12,7 +12,10 @@ export default function Admin() {
   const [form, setForm] = useState({
     name: "",
     description: "",
+    startDate: "",
+    endDate: "",
     manager: "",
+    managerName: "",
     teamMembers: [],
   });
   const [editingProjectId, setEditingProjectId] = useState(null);
@@ -34,7 +37,6 @@ export default function Admin() {
       const response = await axios.post(`${BACKEND_URL}/api/user/login`, {
         email,
       });
-      console.log("ADMIN res:", response);
       const token = response.data.token;
       const userRole = response.data.user.isAdmin; // boolean value
       localStorage.setItem("jwtToken", token);
@@ -42,7 +44,6 @@ export default function Admin() {
       if (!userRole) {
         setErrorMessage("You are not authorized to access this page.");
         setTimeout(() => router.push("/"), 2000);
-        return;
       } else {
         setIsLoggedIn(true);
       }
@@ -86,10 +87,7 @@ export default function Admin() {
     const { name, value } = e.target;
     setForm((prevForm) => ({
       ...prevForm,
-      [name]:
-        name === "teamMembers"
-          ? [...e.target.selectedOptions].map((opt) => opt.value)
-          : value,
+      [name]: value,
     }));
   };
 
@@ -100,7 +98,7 @@ export default function Admin() {
       const payload = {
         name: form.name,
         description: form.description,
-        startDate: form.startDate ,
+        startDate: form.startDate,
         endDate: form.endDate,
         projectManagerId: form.manager,
         teamMemberIds: form.teamMembers.map((id) => parseInt(id)),
@@ -120,7 +118,14 @@ export default function Admin() {
         });
         alert("Project created successfully!");
       }
-      setForm({ name: "", description: "", manager: "", teamMembers: [] });
+      setForm({
+        name: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+        manager: "",
+        teamMembers: [],
+      });
       fetchProjects();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -144,7 +149,11 @@ export default function Admin() {
     setEditingProjectId(project.id);
     setForm({
       name: project.name,
+      description: project.description,
+      startDate: project.startDate,
+      endDate: project.endDate,
       manager: project.projectManagerId,
+      managerName: project.managerName,
       teamMembers: project.teamMembers.map((member) => member.id),
     });
   };
@@ -207,12 +216,16 @@ export default function Admin() {
                   value: user.id,
                   label: user.name,
                 }))}
-                value={form.manager ? { value: form.manager, label: form.managerName } : null}
+                value={
+                  form.manager
+                    ? { value: form.manager, label: form.managerName }
+                    : null
+                }
                 onChange={(selectedOption) => {
                   setForm((prevForm) => ({
                     ...prevForm,
                     manager: selectedOption.value,
-                    managerName: selectedOption.label, // Update managerName on selection
+                    managerName: selectedOption.label,
                   }));
                 }}
                 placeholder="Select Manager"
