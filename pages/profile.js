@@ -143,7 +143,7 @@ const Profile = () => {
             {userProjects.map((project) => (
               <li
                 key={project.id}
-                className="p-4 bg-cyan-300 rounded cursor-pointer hover:bg-black hover:text-white text-white"
+                className="p-4 bg-cyan-300 rounded cursor-pointer hover:bg-white hover:text-black "
                 onClick={() =>
                   router.push(
                     `/projects/${project.id}?userId=${userId}&projectName=${encodeURIComponent(
