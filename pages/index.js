@@ -91,8 +91,8 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-light-blue-100 bg-opacity-60"></div>
         <div className="absolute bottom-8 left-8 text-light-blue-900">
-          <h1 className="text-4xl font-bold">Welcome to Appiness Interactive Pvt. Ltd.</h1>
-          <p className="text-lg mt-2">Project Management Platform</p>
+          <h1 className="text-3xl font-bold">Welcome to Appiness Interactive Pvt. Ltd.</h1>
+          <p className="text-xl mt-2">Project Management Platform</p>
         </div>
       </div>
     </div>

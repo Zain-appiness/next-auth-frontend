@@ -1,9 +1,8 @@
 'use client';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useAuthStore } from '../stores/authStores';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { MailOpen } from 'lucide-react';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import {
@@ -70,10 +69,6 @@ export default function Dashboard() {
     }
   }, [router.query.userId, userId]);
 
-  const handleLogout = async () => {
-    setUser(null);
-    await signOut({ callbackUrl: '/' });
-  };
 
   const handleNavigateToProfile = () => {
     const user = useAuthStore.getState().user;
@@ -113,12 +108,7 @@ export default function Dashboard() {
           >
             View Your Projects
           </Button>
-          <Button
-            onClick={handleLogout}
-            className="w-full py-3 text-lg bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            <MailOpen className="inline-block mr-2" /> Logout
-          </Button>
+          
         </CardContent>
       </Card>
     </div>
