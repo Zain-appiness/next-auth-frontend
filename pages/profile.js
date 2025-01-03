@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { useSession,signOut} from "next-auth/react";
 import {
   Card,
   CardContent,
@@ -81,6 +81,12 @@ const Profile = () => {
     }
   }, [userId, BACKEND_URL]);
 
+  const handleLogout = async () => {
+    setUser(null);
+    await signOut({ callbackUrl: '/' });
+  };
+
+
   return (
     <div className="flex h-screen bg-gray-50 text-black">
       {/* Sidebar */}
@@ -110,8 +116,8 @@ const Profile = () => {
         </div>
         <div>
           <button
-            className="bg-cyan-500 text-white py-2 px-4 rounded  hover:bg-black hover:text-white"
-            onClick={() => router.push("/logout")}
+            className="bg-red-500 text-white py-2 px-4 rounded  hover:bg-black hover:text-white"
+            onClick={handleLogout}
           >
             Logout
           </button>
