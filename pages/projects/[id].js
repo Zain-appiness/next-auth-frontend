@@ -50,6 +50,7 @@ export default function ProjectReport() {
       );
 
       console.log('Report submitted:', response.data);
+      alert("Project report submitted successfully!");
       router.push(`/profile/?userId=${userId}`);
     } catch (err) {
       console.error('Error submitting the report:', err);
@@ -58,7 +59,7 @@ export default function ProjectReport() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-300 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-cyan-300 p-4">
       <Card className="w-full max-w-md p-4 bg-white shadow-md">
         <CardHeader>
           <CardTitle className="text-xl mb-4 text-center">
